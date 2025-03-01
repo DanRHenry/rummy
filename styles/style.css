@@ -1,0 +1,31 @@
+#cardsHolder {
+    display: flex;
+    flex-direction: row;
+}
+
+.cards, #placeholder, .playedCard {
+    height: 7em;
+    border: solid black 1px;
+    background-color: gray;
+    border-radius: .5em;
+    margin: .5em;
+}
+
+#placeholder {
+    position: relative;
+    width: 5em;
+    height: 5em;
+    display: flex;
+    flex-direction: column;
+    padding-top: 50%;
+    align-items: center;
+}
+
+#playArea {
+    position: absolute;
+    display: flex;
+}
+
+.cards:hover {
+    opacity: .75;
+}
