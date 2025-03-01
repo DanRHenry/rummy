@@ -4,37 +4,68 @@
 
 // ---------------------- DOM Variables --------------------
 const cardsHolder = document.getElementById("cardsHolder");
-const playArea = document.getElementById("playArea");
+// const playArea_1 = document.getElementById("playArea_1");
+playArea = document.getElementsByClassName("playArea")
 const cards = document.getElementsByClassName("cards");
-
+const deckCards = document.getElementById("deckCards")
+const passBtn = document.getElementById("passBtn")
 // ----------------------- Global Variables
 
 const deck = [];
+const displayedDeck = [];
 let hand = [];
 let selectedCard;
+let clickedCardIndex;
 
 let placeholder = document.createElement("div");
 placeholder.id = "placeholder";
 placeholder.textContent = "+";
 
+playArea[0].append(placeholder);
 
-playArea.append(placeholder);
 
-playArea.addEventListener("click", placeCard);
 
-function clickedHandCard(cardIndex) {
-  const cards = document.getElementsByClassName("cards");
-  for (let i = 0; i < cards.length; i++) {
-    cards[i].style.opacity = "1";
-  }
-
-  selectedCard = cards[cardIndex];
-  selectedCard.style.opacity = ".5";
-}
 // create a deck of cards:
 // 52 cards
 // 2 - 10, jack, queen, king, ace
 // 4 suits: hearts, diamonds, spades, clubs
+
+buildDeck();
+shuffle(deck);playArea
+drawCards();
+addCardToDisplayedDeck();
+
+if (displayedDeck.length > 0) {
+  for (let i = 0; i < displayedDeck.length; i++) {
+    deckCards.append(displayedDeck[i])
+  }
+}
+
+passBtn.addEventListener("click", addCardToDisplayedDeck)
+
+function addCardToDisplayedDeck() {
+  console.log(deck.length)
+  if (deck.length === 0) {
+    return
+  }
+  const card = deck[deck.length-1] 
+  console.log(card.image)
+
+  const topCard = document.createElement("img")
+  topCard.src = card.image
+  displayedDeck.push(topCard)
+  console.log(deck.length)
+  deck.splice(deck.indexOf(topCard), 1)
+  console.log(deck.length)
+
+  if (displayedDeck.length > 0) {
+    for (let i = 0; i < displayedDeck.length; i++) {
+      deckCards.append(displayedDeck[i])
+    }
+  }
+}
+
+
 
 function buildDeck() {
   const suits = ["hearts", "diamonds", "spades", "clubs"];
@@ -66,7 +97,7 @@ function buildDeck() {
       }
 
       const image = `../media/PNG-cards-1.3/${card_template[j]}_of_${suits[i]}.png`;
-      const alt = `${card_template[j]}_of_${suits[i]}`
+      const alt = `${card_template[j]}_of_${suits[i]}`;
       const card = {
         description: card_template[j],
         suit: suits[i],
@@ -77,32 +108,6 @@ function buildDeck() {
     }
   }
 }
-
-buildDeck();
-shuffle(deck);
-drawCards();
-console.log("deck: ",deck)
-function drawCards() {
-  for (let i = 0; hand.length < 7; i++) {
-    hand.push(deck[i]);
-    deck.splice(i, 1);
-  }
-
-  // place cards in "Cards In Hand"
-  console.log("cards.length: ",cards.length)
-  for (let i = cards.length; i < hand.length; i++) {
-    const card = document.createElement("img");
-    card.className = "cards";
-    card.alt = `card_${i + 1}`;
-    card.src = hand[i].image;
-    cardsHolder.append(card);
-    card.addEventListener("click", () => {
-      clickedHandCard(i);
-    });
-  }
-  console.log("cards.length: ",cards.length)
-}
-
 
 function shuffle(array) {
   let currentIndex = array.length;
@@ -121,29 +126,74 @@ function shuffle(array) {
   }
 }
 
-function placeCard() {
-  for (let i = 0; i < cards.length; i++) {
-    cards[i].style = ""
+function drawCards() {
+  document.getElementById("cardsHolder").remove();
+  const cardsHolder = document.createElement("div");
+  cardsHolder.id = "cardsHolder";
+  document.getElementById("cardsInHand").after(cardsHolder);
+
+  for (let i = 0; hand.length < 7; i++) {
+    hand.push(deck[i]);
+    deck.splice(i, 1);
   }
-  console.log("placing card in `Play Area`")
-  // if (selectedCard) {
-    console.log(selectedCard);
-    console.log(cards)
-    console.log("hand: ",hand)
 
-    for (let i = 0; i < cards.length; i++) {
-      if (cards[i] = selectedCard) {
-        console.log("selected card index:" ,i)
-      }
+  // place cards in "Cards In Hand"
+
+  for (let i = cards.length; i < hand.length; i++) {
+    const card = document.createElement("img");
+    card.className = "cards";
+    card.alt = `card_${i + 1}`;
+    card.src = hand[i].image;
+    cardsHolder.append(card);
+    card.addEventListener("mousedown", () => {
+      clickedCardIndex = Number(card.alt[card.alt.length - 1]);
+        clickedHandCard();
+    })
+    // card.addEventListener("click", () => {
+    //   clickedCardIndex = Number(card.alt[card.alt.length - 1]);
+    //   clickedHandCard();
+    // });
+  }
+}
+
+console.log(playArea.length)
+for (let i = 0; i < playArea.length; i++) {
+  console.log(i)
+  playArea[i].addEventListener("mouseup", mousingUp)
+}
+
+function mousingUp () {
+  console.log("mouse up")
+}
+
+function clickedHandCard() {
+ 
+  placeholder.addEventListener("click", placeCard);
+  cardIndex = clickedCardIndex - 1;
+  const cards = document.getElementsByClassName("cards");
+  for (let i = 0; i < cards.length; i++) {
+    // cards[i].style.opacity = "1";
+  }
+  selectedCard = cards[cardIndex];
+  // selectedCard.style.opacity = ".5";
+}
+
+function placeCard() {
+  console.log("placing card")
+  if (!clickedCardIndex || deck.length === 0) {
+    return;
+  }
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].style = "";
+  }
+  for (let i = 0; i < cards.length; i++) {
+    if ((cards[i] = selectedCard)) {
     }
-    // hand.splice(hand.indexOf(selectedCard),1)
-    // console.log("hand: ",hand)
-
-    // console.log(cards);
-    selectedCard.className = "playedCard";
-
-    // console.log(cards);
-    playArea.append(selectedCard);
-    drawCards();
-  // }
+  }
+  hand.splice(cardIndex, 1);
+  selectedCard.className = "playedCard";
+  placeholder.before(selectedCard); //todo change this to the section being appended
+  drawCards();
+  placeholder.removeEventListener("click", placeCard);
+  cardIndex = null
 }

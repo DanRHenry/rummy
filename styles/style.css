@@ -6,12 +6,12 @@ h1 {
     text-align: center;
 }
 
-#cardsHolder {
+/* #cardsHolder {
     display: flex;
     flex-direction: row;
-}
+} */
 
-.cards, #placeholder, .playedCard {
+.cards, #placeholder, .playedCard, #deckCards > img {
     height: 7em;
     border: solid black 1px;
     background-color: gray;
@@ -19,21 +19,55 @@ h1 {
     margin: .5em;
 }
 
+#deckCards, #cardsHolder, .playArea {
+    display: grid;
+    grid-template-columns: repeat(52, 30px);
+}
+
 #placeholder {
-    position: relative;
+    /* position: relative; */
     width: 5em;
-    height: 5em;
+    /* height: 5em; */
     display: flex;
     flex-direction: column;
-    padding-top: 50%;
+    /* padding-top: 50%; */
     align-items: center;
 }
 
-#playArea {
-    position: absolute;
-    display: flex;
+#placeholder:hover {
+    background-color: rgb(99, 99, 99);
 }
 
-.cards:hover {
-    opacity: .75;
+#placeholder:active {
+    background-color: gray;
+}
+
+.playArea {
+    /* background-color: red; */
+    height: 10em;
+    width: 10em;
+    border: 1px solid black ;
+}
+
+/* #playArea_1 {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+} */
+
+.cards, #deckCards > img {
+    z-index: 0;
+}
+
+.cards:hover, #deckCards > img:hover {
+    position: relative;
+    top: -10px;
+    /* filter:brightness(150%); */
+    /* border: 2px solid black; */
+    /* right: 10em */
+}
+
+.cards:active, #deckCards > img:active {
+    filter: brightness(80%);
 }

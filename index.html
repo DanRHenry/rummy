@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rummy</title>
-    <link rel="stylesheet" href="./styles/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./styles/style.css" />
+  </head>
+  <body>
     <h1>Rummy</h1>
-    <h2>Cards In Hand</h2>
-    <div id="cardsHolder">
-    </div>
+    <h2 id="deckCards"></h2>
+    <h2 id="cardsInHand">Cards In Hand</h2>
+    <button id="passBtn">pass</button>
+    <div id="cardsHolder"></div>
 
     <h2>Play Area</h2>
-    <div><div id="playArea"></div></div>
+    <div>
+        <div class="playArea"></div>
+        <div class="playArea"></div>
+        <div class="playArea"></div>
+        <div class="playArea"></div>
+        <div class="playArea"></div>
+        <div class="playArea"></div>
+    </div>
     <script src="./scripts/index.js"></script>
-</body>
+  </body>
 </html>
