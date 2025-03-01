@@ -1,106 +1,108 @@
+// Citations
 // https://opengameart.org/content/playing-cards-vector-png
+// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 
+// ---------------------- DOM Variables --------------------
 const cardsHolder = document.getElementById("cardsHolder");
-
 const playArea = document.getElementById("playArea");
+const cards = document.getElementsByClassName("cards");
+
+// ----------------------- Global Variables
+
+const deck = [];
+let hand = [];
+let selectedCard;
 
 let placeholder = document.createElement("div");
 placeholder.id = "placeholder";
 placeholder.textContent = "+";
+
+
 playArea.append(placeholder);
 
 playArea.addEventListener("click", placeCard);
 
-let movingCard;
 function clickedHandCard(cardIndex) {
   const cards = document.getElementsByClassName("cards");
   for (let i = 0; i < cards.length; i++) {
     cards[i].style.opacity = "1";
   }
-  const card = cards[cardIndex];
-  // console.log(card)
-  movingCard = card;
-  card.style.opacity = ".5";
-  // console.log("movingCard", movingCard)
+
+  selectedCard = cards[cardIndex];
+  selectedCard.style.opacity = ".5";
 }
 // create a deck of cards:
 // 52 cards
 // 2 - 10, jack, queen, king, ace
 // 4 suits: hearts, diamonds, spades, clubs
 
-const deck = [];
-let cards = document.getElementsByClassName("cards")
-const card_template = [
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  "jack",
-  "queen",
-  "king",
-  "ace",
-];
+function buildDeck() {
+  const suits = ["hearts", "diamonds", "spades", "clubs"];
+  const card_template = [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    "jack",
+    "queen",
+    "king",
+    "ace",
+  ];
 
-const suits = ["hearts", "diamonds", "spades", "clubs"];
+  for (let i = 0; i < suits.length; i++) {
+    for (let j = 0; j < card_template.length; j++) {
+      let value;
+      if (typeof card_template[j] === "number") {
+        value = card_template[j];
+      } else if (card_template[j] == "ace") {
+        value = "ace";
+      } else {
+        value = 10;
+      }
 
-for (let i = 0; i < suits.length; i++) {
-  for (let j = 0; j < card_template.length; j++) {
-    let value;
-    if (typeof card_template[j] === "number") {
-      value = card_template[j];
-    } else if (card_template[j] == "ace") {
-      value = "ace";
-    } else {
-      value = 10;
+      const image = `../media/PNG-cards-1.3/${card_template[j]}_of_${suits[i]}.png`;
+      const alt = `${card_template[j]}_of_${suits[i]}`
+      const card = {
+        description: card_template[j],
+        suit: suits[i],
+        value: value,
+        image: image,
+      };
+      deck.push(card);
     }
-
-    const image = `../media/PNG-cards-1.3/${card_template[j]}_of_${suits[i]}.png`;
-    const card = {
-      description: card_template[j],
-      suit: suits[i],
-      value: value,
-      image: image,
-    };
-    deck.push(card);
   }
 }
 
-let hand = [];
-
+buildDeck();
+shuffle(deck);
+drawCards();
+console.log("deck: ",deck)
 function drawCards() {
   for (let i = 0; hand.length < 7; i++) {
-    // console.log("hand.length: ", hand.length)
-    let cardNum = Math.floor(Math.random() * deck.length);
-    hand.push(deck[cardNum]);
-    deck.splice(cardNum, 1);
+    hand.push(deck[i]);
+    deck.splice(i, 1);
   }
-  placeHandCards ()
+
+  // place cards in "Cards In Hand"
+  console.log("cards.length: ",cards.length)
+  for (let i = cards.length; i < hand.length; i++) {
+    const card = document.createElement("img");
+    card.className = "cards";
+    card.alt = `card_${i + 1}`;
+    card.src = hand[i].image;
+    cardsHolder.append(card);
+    card.addEventListener("click", () => {
+      clickedHandCard(i);
+    });
+  }
+  console.log("cards.length: ",cards.length)
 }
 
-drawCards();
-
-function placeHandCards (){
-    // console.log("hand: ",hand)
-    for (let i = cards.length; i < hand.length; i++) {
-      const card = document.createElement("img");
-      card.className = "cards";
-      card.alt = `card_${i + 1}`;
-      card.src = hand[i].image;
-    //   console.log("card: ",card)
-      cardsHolder.append(card);
-      card.addEventListener("click", () => {
-        clickedHandCard(i);
-      });
-    }
-}
-
-// shuffle the deck
-// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 
 function shuffle(array) {
   let currentIndex = array.length;
@@ -119,21 +121,29 @@ function shuffle(array) {
   }
 }
 
-shuffle(deck);
-// console.log("deck: ", deck)
-
 function placeCard() {
-  if (movingCard) {
-    console.log(movingCard);
-    console.log(document.getElementsByClassName("cards"))
-    movingCard.className = "playedCard";
-
-    let tempcards = [...cards].splice([...cards].indexOf(movingCard),1)
-    cards = []
-    console.log(cards)
-    let end = document.getElementsByClassName("cards")
-    end = tempcards
-    playArea.append(movingCard);
-    drawCards();
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].style = ""
   }
+  console.log("placing card in `Play Area`")
+  // if (selectedCard) {
+    console.log(selectedCard);
+    console.log(cards)
+    console.log("hand: ",hand)
+
+    for (let i = 0; i < cards.length; i++) {
+      if (cards[i] = selectedCard) {
+        console.log("selected card index:" ,i)
+      }
+    }
+    // hand.splice(hand.indexOf(selectedCard),1)
+    // console.log("hand: ",hand)
+
+    // console.log(cards);
+    selectedCard.className = "playedCard";
+
+    // console.log(cards);
+    playArea.append(selectedCard);
+    drawCards();
+  // }
 }
