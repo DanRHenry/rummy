@@ -5,8 +5,8 @@
 
 // ---------------------- DOM Variables --------------------
 const cardsInHand = document.getElementById("cardsInHand");
-// const playArea_1 = document.getElementById("playArea_1");
-playArea = document.getElementsByClassName("playArea");
+const playAreaSection = document.getElementById("playAreaSection")
+const playArea = document.getElementsByClassName("playArea");
 const cards = document.getElementsByClassName("cards");
 const deckCards = document.getElementById("deckCards");
 const passBtn = document.getElementById("passBtn");
@@ -17,23 +17,14 @@ const displayedDeck = [];
 let hand = [];
 let selectedCard;
 let clickedCardIndex;
-
-// let placeholder = document.createElement("div");
-// placeholder.id = "placeholder";
-// placeholder.textContent = "+";
-
-// playArea[0].append(placeholder);
-
-// create a deck of cards:
-// 52 cards
-// 2 - 10, jack, queen, king, ace
-// 4 suits: hearts, diamonds, spades, clubs
+let dragged;
 
 buildDeck();
 shuffle(deck);
 playArea;
 drawCards();
 addCardToDisplayedDeck();
+createPlayArea()
 
 if (displayedDeck.length > 0) {
   for (let i = 0; i < displayedDeck.length; i++) {
@@ -143,92 +134,106 @@ function drawCards() {
     card.alt = `card_${i + 1}`;
     card.src = hand[i].image;
     cardsInHand.append(card);
-
-    let dragged;
-
-    /* events fired on the draggable target */
-
     card.addEventListener("dragstart", (e) => {
-      console.log("dragstart")
+      // console.log("dragstart");
       // store a ref. on the dragged elem
       dragged = e.target;
-      console.log("deck: ",deck)
-      console.log('hand: ',hand)
-      console.log("cards[i]: ",cards[i])
-
+      // console.log("deck: ", deck);
+      // console.log("hand: ", hand);
+      // console.log("card:", hand[i])
+      selectedCard = hand[i]
+      // console.log(selectedCard)
+      // console.log("cards[i]: ", cards[i], i);
+      
       // make it half transparent
       e.target.classList.add("dragging");
+      draggingCard(i)
     });
-
-
-    card.addEventListener("dragend", (e) => {
-      console.log("dragend")
-      // reset the transparency
-      e.target.classList.remove("dragging");
-    });
-
-
-
-  /* events fired on the drop targets */
   }
 }
 
-for (let i = 0; i < playArea.length; i++) {
+function createPlayArea() {
+  
+  for (let i = 0; i < 24; i++) {
+    const playArea = document.createElement("div")
+    playArea.className = "playArea"
+    playArea.id = `playArea_${i}`
+    playAreaSection.append(playArea)
 
-  playArea[i].addEventListener("click", () => {
-    console.log("clicked")
-  })
+    playArea.addEventListener("dragstart", (e) => {
+      // store a ref. on the dragged elem
+      dragged = e.target;
+      console.log("hand: ", hand);
+      selectedCard = hand[i]
+      
+      // make it half transparent
+      e.target.classList.add("dragging");
+      draggingCard(i)
+    });
 
-  playArea[i].addEventListener("dragenter", (e) => {
-    // console.log('dragenter')
-    playArea[i].style.backgroundColor = "blue"
+    playArea.addEventListener("dragover", (e) => {
+      e.preventDefault()
+    })
+
+    playArea.addEventListener("dragend", () => {
+      console.log("ended dragging")
+    })
+  }
+
+
+  // ----------------- Add Event Listeners for Dragging & Dropping ---------------
+  for (let i = 0; i < playArea.length; i++) {
+  
+    playArea[i].addEventListener("drop", (e) => 
+    {
+        placeCard(i, "playArea")
+      e.preventDefault()
+      console.log("dropped")
+    }
+    )
+
+    playArea[i].addEventListener("dragenter", (e) => {
+      // console.log('dragenter')
+      playArea[i].style.backgroundColor = "blue";
       // highlight potential drop target when the draggable element enters it
-    if (e.target.classList.contains("dropzone")) {
-      e.target.classList.add("dragover");
-    }
-  })
-
-  playArea[i].addEventListener("dragleave", (e) => {
-    // console.log("dragleave")
-    playArea[i].style.backgroundColor = null
-    // reset background of potential drop target when the draggable element leaves it
-    if (e.target.classList.contains("dropzone")) {
-      e.preventDefault();
-
-    // move dragged element to the selected drop target
-    if (e.target.classList.contains("dropzone")) {
-      e.target.classList.remove("dragover");
-      e.target.appendChild(dragged)
-    }
-    }
-  })
-
+      if (e.target.classList.contains("dropzone")) {
+        e.target.classList.add("dragover");
+      }
+    });
+  
+    playArea[i].addEventListener("dragleave", (e) => {
+      // console.log("dragleave")
+      playArea[i].style.backgroundColor = null;
+      // reset background of potential drop target when the draggable element leaves it
+      if (e.target.classList.contains("dropzone")) {
+        e.preventDefault();
+  
+        // move dragged element to the selected drop target
+        if (e.target.classList.contains("dropzone")) {
+          e.target.classList.remove("dragover");
+          e.target.appendChild(dragged);
+        }
+      }
+    });
+  }
 }
 
-// console.log(playArea.length);
-// for (let i = 0; i < playArea.length; i++) {
-  // console.log(i);
-  // playArea[i].addEventListener("mouseup", mousingUp);
-// }
+function draggingCard(cardIndex) {
 
-// function mousingUp() {
-  // console.log("mouse up");
-// }
-
-function clickedHandCard() {
-  // placeholder.addEventListener("click", placeCard);
-  cardIndex = clickedCardIndex - 1;
   const cards = document.getElementsByClassName("cards");
   for (let i = 0; i < cards.length; i++) {
-    // cards[i].style.opacity = "1";
   }
-  selectedCard = cards[cardIndex];
-  // selectedCard.style.opacity = ".5";
+
+  clickedCardIndex = cardIndex;
 }
 
-function placeCard() {
-  console.log("placing card");
+function placeCard(index, source) {
+  console.log("index: ",index)
+  console.log(source)
+
   if (!clickedCardIndex || deck.length === 0) {
+    console.log(clickedCardIndex)
+    console.log(selectedCard)
     return;
   }
   for (let i = 0; i < cards.length; i++) {
@@ -238,10 +243,19 @@ function placeCard() {
     if ((cards[i] = selectedCard)) {
     }
   }
-  hand.splice(cardIndex, 1);
-  selectedCard.className = "playedCard";
-  placeholder.before(selectedCard); //todo change this to the section being appended
-  drawCards();
-  // placeholder.removeEventListener("click", placeCard);
-  cardIndex = null;
+  
+  if (selectedCard) {
+    const card = document.createElement("img")
+    card.src = selectedCard.image;
+    card.className = "placedCards"
+    
+    if (playArea[index].childNodes.length === 0) {
+      playArea[index].append(card); 
+      drawCards();
+      cardIndex = null;
+      selectedCard = null;
+      hand.splice(clickedCardIndex, 1);
+      clickedCardIndex = null
+    }
+  }
 }
