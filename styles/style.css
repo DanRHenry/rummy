@@ -11,6 +11,11 @@ h1 {
     flex-direction: row;
 } */
 
+#cardsInHandSection {
+    font-size: x-large;
+    font-weight: bold;
+}
+
 .cards, #placeholder, .playedCard, #deckCards > img {
     height: 7em;
     border: solid black 1px;
@@ -44,9 +49,10 @@ h1 {
 
 .playArea {
     /* background-color: red; */
-    height: 10em;
-    width: 10em;
+    height: 40vh;
+    width: 80vw;
     border: 1px solid black ;
+    background-color: gray;
 }
 
 /* #playArea_1 {
@@ -71,3 +77,31 @@ h1 {
 .cards:active, #deckCards > img:active {
     filter: brightness(80%);
 }
+
+/* -------------------------------------------------------- */
+
+body {
+    /* Prevent the user selecting text in the example */
+    user-select: none;
+  }
+  
+  #draggable {
+    text-align: center;
+    background: white;
+  }
+  
+  .dropzone {
+    width: 200px;
+    height: 20px;
+    background: blueviolet;
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  .dropzone.dragover {
+    background-color: purple;
+  }
+  
+  .dragging {
+    opacity: 0.5;
+  }
