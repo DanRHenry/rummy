@@ -12,6 +12,9 @@ const deckCards = document.getElementById("deckCards");
 const passBtn = document.getElementById("passBtn");
 // ----------------------- Global Variables
 
+const cardsImagesURLPrefix = "https://danhenrydev.com/apps/rummy/media/PNG-cards-1.3"
+// const cardsImagesURLPrefix = "../media/PNG-cards-1.3"
+
 const deck = [];
 const displayedDeck = [];
 let hand = [];
@@ -85,7 +88,7 @@ function buildDeck() {
         value = 10;
       }
 
-      const image = `../media/PNG-cards-1.3/${card_template[j]}_of_${suits[i]}.png`;
+      const image = `${cardsImagesURLPrefix}/${card_template[j]}_of_${suits[i]}.png`;
       const alt = `${card_template[j]}_of_${suits[i]}`;
       const card = {
         description: card_template[j],
